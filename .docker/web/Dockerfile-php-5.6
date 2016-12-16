@@ -1,0 +1,8 @@
+FROM php:5.6-apache
+
+RUN pecl install redis-3.1.0 \
+    && docker-php-ext-enable redis
+
+VOLUME /var/www/html
+
+EXPOSE 80
