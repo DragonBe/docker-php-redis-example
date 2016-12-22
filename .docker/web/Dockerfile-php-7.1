@@ -1,6 +1,18 @@
 FROM php:7.1-apache
 
-RUN pecl install redis-3.0.0 \
+# Installation of latest Redis client
+RUN curl -fsSL 'https://github.com/phpredis/phpredis/archive/3.1.1RC1.tar.gz' -o redis.tar.gz \
+    && mkdir -p redis \
+    && tar -xf redis.tar.gz -C redis --strip-components=1 \
+    && rm redis.tar.gz \
+    && ( \
+        cd redis \
+        && phpize \
+        && ./configure --enable-redis \
+        && make -j$(nproc) \
+        && make install \
+    ) \
+    && rm -r redis \
     && docker-php-ext-enable redis
 
 VOLUME /var/www/html
